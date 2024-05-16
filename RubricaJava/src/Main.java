@@ -1,12 +1,21 @@
 import java.util.Scanner;
 
 import static tools.Common.printMenu;
+import static tools.ToolsJson.*;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import javax.tools.Tool;
+import javax.xml.transform.Source;
 
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
+
+    static User user;
+
+    static boolean exit;
 
     public static void main(String[] args) {
         String[] logigOrSingInMenu = {
@@ -28,7 +37,57 @@ public class Main {
                 "Exit"
         };
 
+        // Variable for login
+        String username, password;
+        JSONArray users;
+        JSONObject tempUser = new JSONObject();
+        boolean contToInsert;
+
         // far visualizzare un menu per scegliere se fare il login e registrarsi
+        switch (printMenu(logigOrSingInMenu)) {
+            case 1:
+                // Read the Users file
+                users = readJSONArr("src/JSON/Users.json");
+
+                do {
+                    contToInsert = false;
+
+                    System.out.print("Insert your username (q to exit): ");
+                    username = scanner.next();
+
+                    if (username.equals("q")) {
+                        break;
+                    } else if ((tempUser = getUserFromUsername(username, users)) == null) {
+                        System.out.println("You have insert an invalid username");
+                        contToInsert = true;
+                    }
+                } while (contToInsert);
+
+                do {
+                    contToInsert = false;
+
+                    System.out.print("Insert your password (q to exit): ");
+                    password = scanner.next();
+
+                    if (password.equalsIgnoreCase("q")) {
+                        break;
+                    } else if (!password.equals((String) tempUser.get("password"))) {
+                        System.out.println("You have insert an invalid password");
+                        contToInsert = true;
+                    }
+                } while (contToInsert);
+
+                // Load the user information using the constractor
+                // todo create another constructor for this case because we need to load also the lists
+                user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"));
+
+                break;
+            case 2:
+                break;
+            default:
+                exit = false;
+                break;
+        }
 
         // Se sceglie di loggarsi allora:
             // Chiedere all'utente username e password e password per i contatti nascosti
@@ -55,5 +114,20 @@ public class Main {
         // viewHiddenContact
         // viewCallNonHiddenContact
         // viewCallHiddenContact
+    }
+
+    private static JSONObject getUserFromUsername(String username, JSONArray users) {
+        JSONObject userJsonObj;
+        String usernameOfObj = "";
+        for (Object userObj : users) {
+            userJsonObj = (JSONObject) userObj;
+
+            //
+            if (((String) userJsonObj.get("username")).equals(username)) {
+                return userJsonObj;
+            }
+        }
+
+        return null;
     }
 }
