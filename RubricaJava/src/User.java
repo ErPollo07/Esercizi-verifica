@@ -1,3 +1,6 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 public class User {
     private String username;
     private String password;
@@ -11,6 +14,20 @@ public class User {
         this.username = username;
         this.password = password;
         this.passwordHiddenContact = passwordHiddenContact;
+        this.visibleContact = new Contact[1];
+        this.nonVisibleContact = new Contact[1];
+        this.callsToVisibleContact = new Contact[1];
+        this.callsToNonVisibleContact = new Contact[1];
+    }
+
+    public User(String username, String password, String passwordHiddenContact, Contact[] visibleContact, Contact[] nonVisibleContact, Contact[] callsToVisibleContact, Contact[] callsToNonVisibleContact) {
+        this.username = username;
+        this.password = password;
+        this.passwordHiddenContact = passwordHiddenContact;
+        this.visibleContact = visibleContact;
+        this.nonVisibleContact = nonVisibleContact;
+        this.callsToVisibleContact = callsToVisibleContact;
+        this.callsToNonVisibleContact = callsToNonVisibleContact;
     }
 
     public String getUsername() {
@@ -69,5 +86,35 @@ public class User {
         this.callsToNonVisibleContact = callsToNonVisibleContact;
     }
 
+    public JSONObject toJSONObj() {
+        JSONObject userJSONObj = new JSONObject();
 
+        userJSONObj.put("username", this.username);
+        userJSONObj.put("password", this.password);
+        userJSONObj.put("pwHiddenContact", this.passwordHiddenContact);
+        userJSONObj.put("visibleContact", listToJSONArray(this.visibleContact));
+        userJSONObj.put("nonVisibleContact", listToJSONArray(this.nonVisibleContact));
+        userJSONObj.put("callsToVisibleContact", listToJSONArray(this.callsToVisibleContact));
+        userJSONObj.put("callsToNonVisibleContact", listToJSONArray(this.callsToNonVisibleContact));
+
+        return userJSONObj;
+    }
+
+    private static JSONArray listToJSONArray(Contact[] arr) {
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == null) continue;
+
+            JSONObject tempContact = new JSONObject();
+
+            tempContact.put("name", arr[i].getName());
+            tempContact.put("surname", arr[i].getSurname());
+            tempContact.put("hidden", arr[i].isHidden());
+
+            jsonArray.add(tempContact);
+        }
+
+        return jsonArray;
+    }
 }

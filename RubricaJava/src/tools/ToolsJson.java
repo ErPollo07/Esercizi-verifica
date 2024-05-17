@@ -1,10 +1,13 @@
 package tools;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class ToolsJson {
@@ -25,4 +28,15 @@ public class ToolsJson {
 
         return jsonArray;
     }
+
+    public static void writeJSONArr(String path, JSONArray jsonArray) {
+        // Write the jsonArray into the file
+        try (FileWriter fileWriter = new FileWriter(path)) {
+            fileWriter.write(JSONValue.toJSONString(jsonArray));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

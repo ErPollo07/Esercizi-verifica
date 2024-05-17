@@ -37,18 +37,19 @@ public class Main {
                 "Exit"
         };
 
-        // Variable for login
-        String username, password;
+        // Variable for login or register
+        String username, password, passwordHiddenContact;
         JSONArray users;
         JSONObject tempUser = new JSONObject();
         boolean contToInsert;
 
+        // Read the Users file
+        users = readJSONArr("src/JSON/Users.json");
+
         // far visualizzare un menu per scegliere se fare il login e registrarsi
         switch (printMenu(logigOrSingInMenu)) {
             case 1:
-                // Read the Users file
-                users = readJSONArr("src/JSON/Users.json");
-
+                // Insert Username
                 do {
                     contToInsert = false;
 
@@ -63,6 +64,7 @@ public class Main {
                     }
                 } while (contToInsert);
 
+                // Insert password
                 do {
                     contToInsert = false;
 
@@ -77,17 +79,32 @@ public class Main {
                     }
                 } while (contToInsert);
 
-                // Load the user information using the constractor
-                // todo create another constructor for this case because we need to load also the lists
-                user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"));
+                // Load the user information using the constructor
+                user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"), getListContact(tempUser, "visibleContact"), getListContact(tempUser, "nonVisibleContact"), getListContact(tempUser, "callsToVisibleContact"), getListContact(tempUser, "callsToNonVisibleContact"));
 
                 break;
             case 2:
+                System.out.print("Insert your username (q to exit): ");
+                username = scanner.next();
+
+                System.out.print("Insert your password (q to exit): ");
+                password = scanner.next();
+
+                System.out.print("Insert your password for the hidden contact (q to exit): ");
+                passwordHiddenContact = scanner.next();
+
+                user = new User(username, password, passwordHiddenContact);
+
+                // update the json file of the users
+                users.add((Object) user.toJSONObj());
+
                 break;
             default:
                 exit = false;
                 break;
         }
+
+        writeJSONArr("src/JSON/Users.json", users);
 
         // Se sceglie di loggarsi allora:
             // Chiedere all'utente username e password e password per i contatti nascosti
@@ -122,12 +139,29 @@ public class Main {
         for (Object userObj : users) {
             userJsonObj = (JSONObject) userObj;
 
-            //
             if (((String) userJsonObj.get("username")).equals(username)) {
                 return userJsonObj;
             }
         }
 
         return null;
+    }
+
+    private static Contact[] getListContact(JSONObject jsonObject, String paramName) {
+        JSONArray arrayOfContact = (JSONArray)jsonObject.get(paramName);
+
+        Contact[] list = new Contact[arrayOfContact.size()];
+
+        for (int i = 0; i < list.length; i++) {
+            JSONObject userJsonObj = (JSONObject) arrayOfContact.get(i);
+
+            String name = (String) userJsonObj.get("name");
+            String surname = (String) userJsonObj.get("surname");
+            boolean hidden = (boolean) userJsonObj.get("hidden");
+
+            list[i] = new Contact(name, surname, hidden);
+        }
+
+        return list;
     }
 }
