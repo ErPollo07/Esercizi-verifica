@@ -1,1 +1,55 @@
-[{"password":"admin","callsToNonVisibleContact":[{"hidden":true,"surname":"ContSurname1","name":"ContName1"},{"hidden":false,"surname":"ContSurname2","name":"ContName2"}],"pwHiddenContact":"adminH","visibleContact":[{"hidden":true,"surname":"ContSurname1","name":"ContName1"},{"hidden":false,"surname":"ContSurname2","name":"ContName2"}],"nonVisibleContact":[{"hidden":true,"surname":"ContSurname1","name":"ContName1"},{"hidden":false,"surname":"ContSurname2","name":"ContName2"}],"callsToVisibleContact":[{"hidden":true,"surname":"ContSurname1","name":"ContName1"},{"hidden":false,"surname":"ContSurname2","name":"ContName2"}],"username":"admin"},{"password":"pollopollo","callsToNonVisibleContact":[],"pwHiddenContact":"pollopolloh","visibleContact":[],"nonVisibleContact":[],"callsToVisibleContact":[],"username":"ErPollo"}]
+[
+  {
+    "password": "admin",
+    "callsToNonVisibleContact": [
+      {
+        "hidden": true,
+        "surname": "ContSurname1",
+        "name": "ContName1"
+      },
+      {
+        "hidden": false,
+        "surname": "ContSurname2",
+        "name": "ContName2"
+      }
+    ],
+    "pwHiddenContact": "adminH",
+    "visibleContact": [
+      {
+        "hidden": true,
+        "surname": "ContSurname1",
+        "name": "ContName1"
+      },
+      {
+        "hidden": false,
+        "surname": "ContSurname2",
+        "name": "ContName2"
+      }
+    ],
+    "nonVisibleContact": [
+      {
+        "hidden": true,
+        "surname": "ContSurname1",
+        "name": "ContName1"
+      },
+      {
+        "hidden": false,
+        "surname": "ContSurname2",
+        "name": "ContName2"
+      }
+    ],
+    "callsToVisibleContact": [
+      {
+        "hidden": true,
+        "surname": "ContSurname1",
+        "name": "ContName1"
+      },
+      {
+        "hidden": false,
+        "surname": "ContSurname2",
+        "name": "ContName2"
+      }
+    ],
+    "username": "admin"
+  }
+]

@@ -32,4 +32,8 @@ public class Contact {
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
+
+    public String toString() {
+        return String.format("Name: %s Surname: %s Hidden: %s", name, surname, hidden);
+    }
 }

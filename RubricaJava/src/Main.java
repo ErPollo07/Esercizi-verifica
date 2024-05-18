@@ -14,6 +14,7 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
 
     static User user;
+    static JSONObject userJson;
 
     static boolean exit;
 
@@ -37,11 +38,23 @@ public class Main {
                 "Exit"
         };
 
+        String[] hiddenOrNotMenu = {
+                "THIS CONTACT IS HIDDEN",
+                "Yes",
+                "No",
+        };
+
         // Variable for login or register
         String username, password, passwordHiddenContact;
         JSONArray users;
         JSONObject tempUser = new JSONObject();
         boolean contToInsert;
+
+        // Variable for creating a new Contact
+        String name, surname;
+        boolean hidden;
+        Contact contactToInsert;
+        JSONArray arrContact;
 
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
@@ -84,6 +97,7 @@ public class Main {
                     if (!username.equals("q") || !password.equals("q")) {
                         // Load the user information using the constructor
                         user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"), getListContact(tempUser, "visibleContact"), getListContact(tempUser, "nonVisibleContact"), getListContact(tempUser, "callsToVisibleContact"), getListContact(tempUser, "callsToNonVisibleContact"));
+                        userJson = tempUser;
                         exit = false;
                     }
 
@@ -114,9 +128,10 @@ public class Main {
                     }
 
                     user = new User(username, password, passwordHiddenContact);
+                    userJson = user.toJSONObj();
 
                     // update the json file of the users
-                    users.add((Object) user.toJSONObj());
+                    users.add(userJson);
 
                     exit = false;
                     break;
@@ -126,7 +141,34 @@ public class Main {
             }
         } while (exit);
 
-        System.out.println("Hai effetuato il login");
+        switch (printMenu(principalMenu)) {
+            // Insert new contact in your address book
+            case 1:
+                System.out.println("Insert the name of the contact which you want to insert: ");
+                name = scanner.next();
+
+                System.out.println("Insert the surname of the contact which you want to insert: ");
+                surname = scanner.next();
+
+                hidden = switch (printMenu(hiddenOrNotMenu)) {
+                    case 1 -> true;
+                    default ->  false;
+                };
+
+                contactToInsert = new Contact(name, surname, hidden);
+
+                if (hidden) {
+                    arrContact = (JSONArray) userJson.get("visibleContact");
+                } else {
+                    arrContact = (JSONArray) userJson.get("nonVisibleContact");
+                }
+
+                arrContact.add(contactToInsert);
+
+                break;
+            case 2:
+
+        }
 
         // Write all the changes to the Users.json file
         writeJSONArr("src/JSON/Users.json", users);
