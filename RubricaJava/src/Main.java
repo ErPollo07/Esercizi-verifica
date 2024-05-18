@@ -46,72 +46,90 @@ public class Main {
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
 
-        // far visualizzare un menu per scegliere se fare il login e registrarsi
-        switch (printMenu(logigOrSingInMenu)) {
-            case 1:
-                // Insert Username
-                do {
-                    contToInsert = false;
+        do {
+            exit = true;
 
+            switch (printMenu(logigOrSingInMenu)) {
+                case 1:
+                    // Insert Username
+                    do {
+                        contToInsert = false;
+
+                        System.out.print("Insert your username (q to exit): ");
+                        username = scanner.next();
+
+                        if (username.equals("q")) {
+                            break;
+                        } else if ((tempUser = getUserFromUsername(username, users)) == null) {
+                            System.out.println("You have insert an invalid username");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    // Insert password
+                    do {
+                        contToInsert = false;
+
+                        System.out.print("Insert your password (q to exit): ");
+                        password = scanner.next();
+
+                        if (password.equalsIgnoreCase("q")) {
+                            break;
+                        } else if (!password.equals((String) tempUser.get("password"))) {
+                            System.out.println("You have insert an invalid password");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    if (!username.equals("q") || !password.equals("q")) {
+                        // Load the user information using the constructor
+                        user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"), getListContact(tempUser, "visibleContact"), getListContact(tempUser, "nonVisibleContact"), getListContact(tempUser, "callsToVisibleContact"), getListContact(tempUser, "callsToNonVisibleContact"));
+                        exit = false;
+                    }
+
+                    break;
+                case 2:
                     System.out.print("Insert your username (q to exit): ");
                     username = scanner.next();
 
                     if (username.equals("q")) {
+                        exit = true;
                         break;
-                    } else if ((tempUser = getUserFromUsername(username, users)) == null) {
-                        System.out.println("You have insert an invalid username");
-                        contToInsert = true;
                     }
-                } while (contToInsert);
-
-                // Insert password
-                do {
-                    contToInsert = false;
 
                     System.out.print("Insert your password (q to exit): ");
                     password = scanner.next();
 
-                    if (password.equalsIgnoreCase("q")) {
+                    if (password.equals("q")) {
+                        exit = true;
                         break;
-                    } else if (!password.equals((String) tempUser.get("password"))) {
-                        System.out.println("You have insert an invalid password");
-                        contToInsert = true;
                     }
-                } while (contToInsert);
 
-                // Load the user information using the constructor
-                user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"), getListContact(tempUser, "visibleContact"), getListContact(tempUser, "nonVisibleContact"), getListContact(tempUser, "callsToVisibleContact"), getListContact(tempUser, "callsToNonVisibleContact"));
+                    System.out.print("Insert your password for the hidden contact (q to exit): ");
+                    passwordHiddenContact = scanner.next();
 
-                break;
-            case 2:
-                System.out.print("Insert your username (q to exit): ");
-                username = scanner.next();
+                    if (passwordHiddenContact.equals("q")) {
+                        exit = true;
+                        break;
+                    }
 
-                System.out.print("Insert your password (q to exit): ");
-                password = scanner.next();
+                    user = new User(username, password, passwordHiddenContact);
 
-                System.out.print("Insert your password for the hidden contact (q to exit): ");
-                passwordHiddenContact = scanner.next();
+                    // update the json file of the users
+                    users.add((Object) user.toJSONObj());
 
-                user = new User(username, password, passwordHiddenContact);
+                    exit = false;
+                    break;
+                default:
+                    System.exit(0);
+                    break;
+            }
+        } while (exit);
 
-                // update the json file of the users
-                users.add((Object) user.toJSONObj());
+        System.out.println("Hai effetuato il login");
 
-                break;
-            default:
-                exit = false;
-                break;
-        }
-
+        // Write all the changes to the Users.json file
         writeJSONArr("src/JSON/Users.json", users);
-
-        // Se sceglie di loggarsi allora:
-            // Chiedere all'utente username e password e password per i contatti nascosti
-            // se o l'username o password non esistono e far reinserire
-        // Se sceglie di registrarsi allora:
-            // Far inserire username e password, controllare username se esiste già e la password se è vuota
-            // Far fare il login
 
         // far visualizzare il menu
         // 1. inserimento di un nuovo contatto nella rubrica;
