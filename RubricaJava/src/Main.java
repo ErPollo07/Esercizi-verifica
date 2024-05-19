@@ -63,6 +63,9 @@ public class Main {
         int indexOfContact = 0;
         String pwHiddenContact = "";
 
+        // Variable to set another password for the hidden contact
+        String newPassWord;
+
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
 
@@ -264,6 +267,15 @@ public class Main {
                     arrContact.remove(indexOfContact - 1);
                     break;
                 }
+                // Insert a new password for view the hidden contact
+                case 4: {
+                    System.out.print("Insert the new password for the hidden contact");
+                    newPassWord = scanner.next();
+
+                    user.setPassword(newPassWord);
+                    userJson.put("pwHiddenContact", newPassWord);
+                    break;
+                }
                 // Exit
                 case 9: {
                     contPrincMenu = false;
@@ -327,7 +339,6 @@ public class Main {
 
             String name = (String) userJsonObj.get("name");
             String surname = (String) userJsonObj.get("surname");
-            boolean hidden = (boolean) userJsonObj.get("hidden");
 
             list[i] = new Contact(name, surname);
         }
