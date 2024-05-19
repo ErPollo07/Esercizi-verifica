@@ -29,7 +29,8 @@ public class Main {
         String[] principalMenu = {
                 "PRINCIPAL MENU",
                 "Insert new contact in your address book",
-                "Delete a contact in your address book",
+                "Delete a visible contact in your address book",
+                "Delete a hidden contact in your address book",
                 "Insert a new password for view the hidden contact",
                 "View visible contact",
                 "View hidden contact",
@@ -44,6 +45,8 @@ public class Main {
                 "No",
         };
 
+        boolean contPrincMenu;
+
         // Variable for login or register
         String username, password, passwordHiddenContact;
         JSONArray users;
@@ -53,8 +56,11 @@ public class Main {
         // Variable for creating a new Contact
         String name, surname;
         boolean hidden;
-        Contact contactToInsert;
+        JSONObject contactToInsert = new JSONObject();
         JSONArray arrContact;
+
+        // Variable to delete a contact
+        int indexOfContact = 0;
 
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
@@ -74,7 +80,7 @@ public class Main {
                         if (username.equals("q")) {
                             break;
                         } else if ((tempUser = getUserFromUsername(username, users)) == null) {
-                            System.out.println("You have insert an invalid username");
+                            System.out.println("ATTENTION: You have insert an invalid username");
                             contToInsert = true;
                         }
                     } while (contToInsert);
@@ -89,7 +95,7 @@ public class Main {
                         if (password.equalsIgnoreCase("q")) {
                             break;
                         } else if (!password.equals((String) tempUser.get("password"))) {
-                            System.out.println("You have insert an invalid password");
+                            System.out.println("ATTENTION: You have insert an invalid password");
                             contToInsert = true;
                         }
                     } while (contToInsert);
@@ -141,34 +147,80 @@ public class Main {
             }
         } while (exit);
 
-        switch (printMenu(principalMenu)) {
-            // Insert new contact in your address book
-            case 1:
-                System.out.println("Insert the name of the contact which you want to insert: ");
-                name = scanner.next();
+        do {
+            contPrincMenu = true;
 
-                System.out.println("Insert the surname of the contact which you want to insert: ");
-                surname = scanner.next();
 
-                hidden = switch (printMenu(hiddenOrNotMenu)) {
-                    case 1 -> true;
-                    default ->  false;
-                };
 
-                contactToInsert = new Contact(name, surname, hidden);
+            switch (printMenu(principalMenu)) {
+                // Insert new contact in your address book
+                case 1: {
+                    System.out.print("Insert the name of the contact which you want to insert: ");
+                    name = scanner.next();
 
-                if (hidden) {
-                    arrContact = (JSONArray) userJson.get("visibleContact");
-                } else {
-                    arrContact = (JSONArray) userJson.get("nonVisibleContact");
+                    System.out.print("Insert the surname of the contact which you want to insert: ");
+                    surname = scanner.next();
+
+                    hidden = switch (printMenu(hiddenOrNotMenu)) {
+                        case 1 -> true;
+                        default -> false;
+                    };
+
+                    contactToInsert.put("name", name);
+                    contactToInsert.put("surname", surname);
+                    contactToInsert.put("hidden", hidden);
+
+                    if (hidden) {
+                        arrContact = (JSONArray) userJson.get("visibleContact");
+                    } else {
+                        arrContact = (JSONArray) userJson.get("nonVisibleContact");
+                    }
+
+                    arrContact.add(contactToInsert);
+
+                    break;
                 }
+                // Delete a contact in your address book
+                case 2: {
+                    arrContact = (JSONArray) userJson.get("visibleContact");
 
-                arrContact.add(contactToInsert);
+                    if (arrContact.isEmpty()) {
+                        System.out.println("The list of contact is empty.");
+                        break;
+                    }
 
-                break;
-            case 2:
+                    // print list of contact
+                    printArrOfContact(arrContact);
 
-        }
+                    // get the index of the contact
+                    do {
+                        contToInsert = false;
+
+                        try {
+                            System.out.print("Insert the index of the contact which you want to delete: ");
+                            indexOfContact = Integer.parseInt(scanner.next());
+
+                            // Check if the insertion is between 1 and the size of the arr
+                            if (indexOfContact < 0 || indexOfContact > arrContact.size()) {
+                                System.out.println("ATTENTION: You have to insert a number between 1 and " + arrContact.size());
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("ATTENTION: You have to insert a number.");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    // remove the contact from the list
+                    arrContact.remove(indexOfContact - 1);
+                    break;
+                }
+                // Exit
+                case 9: {
+                    contPrincMenu = false;
+                    break;
+                }
+            }
+        } while (contPrincMenu);
 
         // Write all the changes to the Users.json file
         writeJSONArr("src/JSON/Users.json", users);
@@ -191,6 +243,14 @@ public class Main {
         // viewHiddenContact
         // viewCallNonHiddenContact
         // viewCallHiddenContact
+    }
+
+    private static void printArrOfContact(JSONArray contacts) {
+        for (int i = 0; i < contacts.size(); i++) {
+            JSONObject contact = (JSONObject) contacts.get(i);
+
+            System.out.printf("[" + (i+1) + "] - Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
+        }
     }
 
     private static JSONObject getUserFromUsername(String username, JSONArray users) {
