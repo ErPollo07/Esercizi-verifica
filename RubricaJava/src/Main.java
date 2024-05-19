@@ -61,6 +61,7 @@ public class Main {
 
         // Variable to delete a contact
         int indexOfContact = 0;
+        String pwHiddenContact = "";
 
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
@@ -150,8 +151,6 @@ public class Main {
         do {
             contPrincMenu = true;
 
-
-
             switch (printMenu(principalMenu)) {
                 // Insert new contact in your address book
                 case 1: {
@@ -168,7 +167,6 @@ public class Main {
 
                     contactToInsert.put("name", name);
                     contactToInsert.put("surname", surname);
-                    contactToInsert.put("hidden", hidden);
 
                     if (hidden) {
                         arrContact = (JSONArray) userJson.get("visibleContact");
@@ -180,9 +178,61 @@ public class Main {
 
                     break;
                 }
-                // Delete a contact in your address book
+                // Delete a visible contact in your address book
                 case 2: {
                     arrContact = (JSONArray) userJson.get("visibleContact");
+
+                    if (arrContact.isEmpty()) {
+                        System.out.println("The list of contact is empty.");
+                        break;
+                    }
+
+                    // print list of contact
+                    printArrOfContact(arrContact);
+
+                    // get the index of the contact
+                    do {
+                        contToInsert = false;
+
+                        try {
+                            System.out.print("Insert the index of the contact which you want to delete: ");
+                            indexOfContact = Integer.parseInt(scanner.next());
+
+                            // Check if the insertion is between 1 and the size of the arr
+                            if (indexOfContact < 0 || indexOfContact > arrContact.size()) {
+                                System.out.println("ATTENTION: You have to insert a number between 1 and " + arrContact.size());
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("ATTENTION: You have to insert a number.");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    // remove the contact from the list
+                    arrContact.remove(indexOfContact - 1);
+                    break;
+                }
+                // Delete a hidden contact in your address book
+                case 3: {
+                    do {
+                        contToInsert = false;
+
+                        System.out.print("Insert the password for the hidden contact (q to exit): ");
+                        pwHiddenContact = scanner.next();
+
+                        if (pwHiddenContact.equalsIgnoreCase("q")) {
+                            break;
+                        } else if (!user.getPasswordHiddenContact().equals(pwHiddenContact)) {
+                            System.out.println("ATTENTION: Your inserted password doesn't match your password.");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    if (pwHiddenContact.equalsIgnoreCase("q")) {
+                        break;
+                    }
+
+                    arrContact = (JSONArray) userJson.get("nonVisibleContact");
 
                     if (arrContact.isEmpty()) {
                         System.out.println("The list of contact is empty.");
@@ -249,7 +299,7 @@ public class Main {
         for (int i = 0; i < contacts.size(); i++) {
             JSONObject contact = (JSONObject) contacts.get(i);
 
-            System.out.printf("[" + (i+1) + "] - Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
+            System.out.printf("[" + (i + 1) + "] - Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
         }
     }
 
@@ -268,7 +318,7 @@ public class Main {
     }
 
     private static Contact[] getListContact(JSONObject jsonObject, String paramName) {
-        JSONArray arrayOfContact = (JSONArray)jsonObject.get(paramName);
+        JSONArray arrayOfContact = (JSONArray) jsonObject.get(paramName);
 
         Contact[] list = new Contact[arrayOfContact.size()];
 
@@ -279,7 +329,7 @@ public class Main {
             String surname = (String) userJsonObj.get("surname");
             boolean hidden = (boolean) userJsonObj.get("hidden");
 
-            list[i] = new Contact(name, surname, hidden);
+            list[i] = new Contact(name, surname);
         }
 
         return list;

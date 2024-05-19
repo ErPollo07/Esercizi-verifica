@@ -110,7 +110,6 @@ public class User {
 
             tempContact.put("name", arr[i].getName());
             tempContact.put("surname", arr[i].getSurname());
-            tempContact.put("hidden", arr[i].isHidden());
 
             jsonArray.add(tempContact);
         }

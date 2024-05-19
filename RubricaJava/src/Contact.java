@@ -1,12 +1,10 @@
 public class Contact {
     private String name;
     private String surname;
-    private boolean hidden;
 
-    public Contact(String name, String surname, boolean hidden) {
+    public Contact(String name, String surname) {
         this.name = name;
         this.surname = surname;
-        this.hidden = hidden;
     }
 
     public String getName() {
@@ -25,15 +23,7 @@ public class Contact {
         this.surname = surname;
     }
 
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
     public String toString() {
-        return String.format("Name: %s Surname: %s Hidden: %s", name, surname, hidden);
+        return String.format("Name: %s Surname: %s", name, surname);
     }
 }
