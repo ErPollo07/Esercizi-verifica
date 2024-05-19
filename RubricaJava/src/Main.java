@@ -6,9 +6,6 @@ import static tools.ToolsJson.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.tools.Tool;
-import javax.xml.transform.Source;
-
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
@@ -37,7 +34,7 @@ public class Main {
                 "View the list of calls to visible contact",
                 "View the list of calls to hidden contact",
                 "Call a visible contact",
-                "Call an hidden contact",
+                "Call a hidden contact",
                 "Exit"
         };
 
@@ -177,9 +174,9 @@ public class Main {
                     contactToInsert.put("surname", surname);
 
                     if (hidden) {
-                        arrContact = (JSONArray) userJson.get("visibleContact");
-                    } else {
                         arrContact = (JSONArray) userJson.get("nonVisibleContact");
+                    } else {
+                        arrContact = (JSONArray) userJson.get("visibleContact");
                     }
 
                     arrContact.add(contactToInsert);
@@ -196,7 +193,7 @@ public class Main {
                     }
 
                     // print list of contact
-                    printArrOfContact(arrContact);
+                    selectContact(arrContact);
 
                     // get the index of the contact
                     do {
@@ -242,34 +239,19 @@ public class Main {
 
                     arrContact = (JSONArray) userJson.get("nonVisibleContact");
 
+                    // Check if the array of contact is empty
                     if (arrContact.isEmpty()) {
                         System.out.println("The list of contact is empty.");
                         break;
                     }
 
-                    // print list of contact
-                    printArrOfContact(arrContact);
+                    // Get the index
+                    indexOfContact = selectContact(arrContact);
 
-                    // get the index of the contact
-                    do {
-                        contToInsert = false;
-
-                        try {
-                            System.out.print("Insert the index of the contact which you want to delete: ");
-                            indexOfContact = Integer.parseInt(scanner.next());
-
-                            // Check if the insertion is between 1 and the size of the arr
-                            if (indexOfContact < 0 || indexOfContact > arrContact.size()) {
-                                System.out.println("ATTENTION: You have to insert a number between 1 and " + arrContact.size());
-                            }
-                        } catch (NumberFormatException e) {
-                            System.out.println("ATTENTION: You have to insert a number.");
-                            contToInsert = true;
-                        }
-                    } while (contToInsert);
-
-                    // remove the contact from the list
-                    arrContact.remove(indexOfContact - 1);
+                    if (indexOfContact != 0) {
+                        // remove the contact from the list
+                        arrContact.remove(indexOfContact - 1);
+                    }
                     break;
                 }
                 // Insert a new password for view the hidden contact
@@ -283,7 +265,8 @@ public class Main {
                 }
                 // View visible contact
                 case 5: {
-                    viewContact((JSONArray) userJson.get("visibleContact"));
+                    if (!((JSONArray) userJson.get("visibleContact")).isEmpty())
+                        viewContact((JSONArray) userJson.get("visibleContact"));
                     break;
                 }
                 // View hidden contact
@@ -310,7 +293,8 @@ public class Main {
                 }
                 // View the list of calls to visible contact
                 case 7: {
-                    viewContact((JSONArray) userJson.get("callsToVisibleContact"));
+                    if (!((JSONArray) userJson.get("callsToVisibleContact")).isEmpty())
+                        viewContact((JSONArray) userJson.get("callsToVisibleContact"));
                     break;
                 }
                 // View the list of calls to hidden contact
@@ -335,8 +319,43 @@ public class Main {
 
                     break;
                 }
+                // Call a visible contact
+                case 9: {
+                    arrContact = (JSONArray) userJson.get("callsToVisibleContact");
+
+                    indexOfContact = selectContact((JSONArray) userJson.get("visibleContact"));
+
+                    arrContact.add(((JSONArray) userJson.get("visibleContact")).get(indexOfContact-1));
+                    break;
+                }
+                // Call a hidden contact
+                case 10: {
+                    do {
+                        contToInsert = false;
+
+                        System.out.print("Insert the password for the hidden contact (q to exit): ");
+                        pwInsert = scanner.next();
+
+                        if (pwInsert.equalsIgnoreCase("q")) {
+                            break;
+                        } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                            System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    if (!pwInsert.equalsIgnoreCase("q")) {
+                        arrContact = (JSONArray) userJson.get("callsToNonVisibleContact");
+
+                        indexOfContact = selectContact((JSONArray) userJson.get("nonVisibleContact"));
+
+                        arrContact.add(((JSONArray) userJson.get("nonVisibleContact")).get(indexOfContact-1));
+                    }
+
+                    break;
+                }
                 // Exit
-                case 11: {
+                default: {
                     contPrincMenu = false;
                     break;
                 }
@@ -374,12 +393,34 @@ public class Main {
         }
     }
 
-    private static void printArrOfContact(JSONArray contacts) {
+    private static int selectContact(JSONArray contacts) {
+        boolean contToInsert;
+        int indexOfContact = 0;
+
         for (int i = 0; i < contacts.size(); i++) {
             JSONObject contact = (JSONObject) contacts.get(i);
 
             System.out.printf("[" + (i + 1) + "] - Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
         }
+
+        do {
+            contToInsert = false;
+
+            try {
+                System.out.print("Insert the index of the contact which you want to delete (0 to exit): ");
+                indexOfContact = Integer.parseInt(scanner.next());
+
+                // Check if the insertion is between 1 and the size of the arr
+                if (indexOfContact < 0 || indexOfContact > contacts.size()) {
+                    System.out.println("ATTENTION: You have to insert a number between 1 and " + contacts.size());
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("ATTENTION: You have to insert a number.");
+                contToInsert = true;
+            }
+        } while (contToInsert);
+
+        return indexOfContact;
     }
 
     private static JSONObject getUserFromUsername(String username, JSONArray users) {
