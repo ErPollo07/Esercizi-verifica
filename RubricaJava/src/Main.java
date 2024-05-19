@@ -36,6 +36,8 @@ public class Main {
                 "View hidden contact",
                 "View the list of calls to visible contact",
                 "View the list of calls to hidden contact",
+                "Call a visible contact",
+                "Call an hidden contact",
                 "Exit"
         };
 
@@ -65,6 +67,9 @@ public class Main {
 
         // Variable to set another password for the hidden contact
         String newPassWord;
+
+        // Variable to view the list of hidden contact
+        String pwInsert;
 
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
@@ -276,8 +281,62 @@ public class Main {
                     userJson.put("pwHiddenContact", newPassWord);
                     break;
                 }
+                // View visible contact
+                case 5: {
+                    viewContact((JSONArray) userJson.get("visibleContact"));
+                    break;
+                }
+                // View hidden contact
+                case 6: {
+                    do {
+                        contToInsert = false;
+
+                        System.out.print("Insert the password for the hidden contact (q to exit): ");
+                        pwInsert = scanner.next();
+
+                        if (pwInsert.equalsIgnoreCase("q")) {
+                            break;
+                        } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                            System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    if (!pwInsert.equalsIgnoreCase("q")) {
+                        viewContact((JSONArray) userJson.get("nonVisibleContact"));
+                    }
+
+                    break;
+                }
+                // View the list of calls to visible contact
+                case 7: {
+                    viewContact((JSONArray) userJson.get("callsToVisibleContact"));
+                    break;
+                }
+                // View the list of calls to hidden contact
+                case 8: {
+                    do {
+                        contToInsert = false;
+
+                        System.out.print("Insert the password for the hidden contact (q to exit): ");
+                        pwInsert = scanner.next();
+
+                        if (pwInsert.equalsIgnoreCase("q")) {
+                            break;
+                        } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                            System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                            contToInsert = true;
+                        }
+                    } while (contToInsert);
+
+                    if (!pwInsert.equalsIgnoreCase("q")) {
+                        viewContact((JSONArray) userJson.get("callsToNonVisibleContact"));
+                    }
+
+                    break;
+                }
                 // Exit
-                case 9: {
+                case 11: {
                     contPrincMenu = false;
                     break;
                 }
@@ -305,6 +364,14 @@ public class Main {
         // viewHiddenContact
         // viewCallNonHiddenContact
         // viewCallHiddenContact
+    }
+
+    private static void viewContact(JSONArray array) {
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject contact = (JSONObject) array.get(i);
+
+            System.out.printf("Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
+        }
     }
 
     private static void printArrOfContact(JSONArray contacts) {
