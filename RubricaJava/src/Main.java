@@ -1,3 +1,4 @@
+import java.util.Locale;
 import java.util.Scanner;
 
 import static tools.Common.printMenu;
@@ -26,15 +27,11 @@ public class Main {
         String[] principalMenu = {
                 "PRINCIPAL MENU",
                 "Insert new contact in your address book",
-                "Delete a visible contact in your address book",
-                "Delete a hidden contact in your address book",
+                "Delete a contact in your address book",
                 "Insert a new password for view the hidden contact",
-                "View visible contact",
-                "View hidden contact",
-                "View the list of calls to visible contact",
-                "View the list of calls to hidden contact",
-                "Call a visible contact",
-                "Call a hidden contact",
+                "View the list of contact",
+                "View the list of calls",
+                "Call a contact",
                 "Exit"
         };
 
@@ -53,20 +50,21 @@ public class Main {
         boolean contToInsert;
 
         // Variable for creating a new Contact
-        String name, surname;
+        String name, surname, number;
         boolean hidden;
         JSONObject contactToInsert = new JSONObject();
         JSONArray arrContact;
 
         // Variable to delete a contact
         int indexOfContact = 0;
-        String pwHiddenContact = "";
+        boolean wantDelete;
 
         // Variable to set another password for the hidden contact
         String newPassWord;
 
-        // Variable to view the list of hidden contact
-        String pwInsert;
+        // Variable to view the list of contact
+        String pwInsert, viewHiddenChoice;
+        boolean viewHiddenChoiceBool;
 
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
@@ -100,7 +98,7 @@ public class Main {
 
                         if (password.equalsIgnoreCase("q")) {
                             break;
-                        } else if (!password.equals((String) tempUser.get("password"))) {
+                        } else if (!password.equals(tempUser.get("password"))) {
                             System.out.println("ATTENTION: You have insert an invalid password");
                             contToInsert = true;
                         }
@@ -108,7 +106,7 @@ public class Main {
 
                     if (!username.equals("q") || !password.equals("q")) {
                         // Load the user information using the constructor
-                        user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"), getListContact(tempUser, "visibleContact"), getListContact(tempUser, "nonVisibleContact"), getListContact(tempUser, "callsToVisibleContact"), getListContact(tempUser, "callsToNonVisibleContact"));
+                        user = new User((String) tempUser.get("username"), (String) tempUser.get("password"), (String) tempUser.get("pwHiddenContact"), getListContact(tempUser, "contact"), getListContact(tempUser, "calls"));
                         userJson = tempUser;
                         exit = false;
                     }
@@ -159,103 +157,112 @@ public class Main {
             switch (printMenu(principalMenu)) {
                 // Insert new contact in your address book
                 case 1: {
-                    System.out.print("Insert the name of the contact which you want to insert: ");
-                    name = scanner.next();
+                    arrContact = (JSONArray) userJson.get("contact");
+                    contactToInsert = new JSONObject();
 
-                    System.out.print("Insert the surname of the contact which you want to insert: ");
-                    surname = scanner.next();
+                    // Get the name of the contact
+                    do {
+                        System.out.print("Insert the name of the contact which you want to insert: ");
+                        name = scanner.next();
 
-                    hidden = switch (printMenu(hiddenOrNotMenu)) {
-                        case 1 -> true;
-                        default -> false;
-                    };
+                        if (name.isEmpty())
+                            System.out.println("ATTENTION: You have to insert a blank string");
+                    } while (name.isEmpty());
 
+                    // Get the surname of the contact
+                    do {
+                        System.out.print("Insert the surname of the contact which you want to insert: ");
+                        surname = scanner.next();
+
+                        if (surname.isEmpty())
+                            System.out.println("ATTENTION: You have to insert a blank string");
+                    } while (surname.isEmpty());
+
+                    // Get the number of the contact
+                    do {
+                        System.out.print("Insert the number of the contact which you want to insert: ");
+                        number = scanner.next();
+
+                        if (number.isEmpty()) {
+                            System.out.println("ATTENTION: You have to insert a blank string");
+                        } else if (!checkIfDigit(number)) {
+                            System.out.println("ATTENTION: You have to insert only number");
+                        }
+                    } while (number.isEmpty() || !checkIfDigit(number));
+
+                    // Ask the user if the contact have to be hidden or no
+                    hidden = printMenu(hiddenOrNotMenu) == 1;
+
+                    // put all values in a JSONObj
                     contactToInsert.put("name", name);
                     contactToInsert.put("surname", surname);
+                    contactToInsert.put("number", number);
+                    contactToInsert.put("hidden", hidden);
 
-                    if (hidden) {
-                        arrContact = (JSONArray) userJson.get("nonVisibleContact");
-                    } else {
-                        arrContact = (JSONArray) userJson.get("visibleContact");
-                    }
-
+                    // Put JSONObj in the array of contact
                     arrContact.add(contactToInsert);
 
                     break;
                 }
-                // Delete a visible contact in your address book
+                // Delete a contact in your address book
                 case 2: {
-                    arrContact = (JSONArray) userJson.get("visibleContact");
+                    wantDelete = true;
 
+                    arrContact = (JSONArray) userJson.get("contact");
+
+                    // If the list is empty then
+                    // tell it to the user and break
                     if (arrContact.isEmpty()) {
                         System.out.println("The list of contact is empty.");
                         break;
                     }
 
-                    // print list of contact
-                    selectContact(arrContact);
-
-                    // get the index of the contact
+                    // Ask the user if he wants to view also the hidden contact
                     do {
-                        contToInsert = false;
+                        System.out.println("You want delete a hidden contact (y / n): ");
+                        viewHiddenChoice = scanner.next();
 
-                        try {
-                            System.out.print("Insert the index of the contact which you want to delete: ");
-                            indexOfContact = Integer.parseInt(scanner.next());
+                        if (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n")) {
+                            System.out.println("ATTENTION: You have to insert y or n.");
+                        }
+                    } while (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n"));
 
-                            // Check if the insertion is between 1 and the size of the arr
-                            if (indexOfContact < 0 || indexOfContact > arrContact.size()) {
-                                System.out.println("ATTENTION: You have to insert a number between 1 and " + arrContact.size());
+                    viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
+
+                    // If the user wants to delete a hidden contact
+                    // ask him the password for the hidden contact
+                    if (viewHiddenChoiceBool) {
+                        do {
+                            contToInsert = false;
+
+                            System.out.print("Insert the password for the hidden contact (q to exit): ");
+                            pwInsert = scanner.next();
+
+                            if (pwInsert.equalsIgnoreCase("q")) {
+                                wantDelete = false;
+                                break;
+                            } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                                System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                                contToInsert = true;
                             }
-                        } catch (NumberFormatException e) {
-                            System.out.println("ATTENTION: You have to insert a number.");
-                            contToInsert = true;
+                        } while (contToInsert);
+
+                        if (!pwInsert.equalsIgnoreCase("q")) {
+                            indexOfContact = selectContact(arrContact, viewHiddenChoiceBool);
                         }
-                    } while (contToInsert);
-
-                    // remove the contact from the list
-                    arrContact.remove(indexOfContact - 1);
-                    break;
-                }
-                // Delete a hidden contact in your address book
-                case 3: {
-                    do {
-                        contToInsert = false;
-
-                        System.out.print("Insert the password for the hidden contact (q to exit): ");
-                        pwHiddenContact = scanner.next();
-
-                        if (pwHiddenContact.equalsIgnoreCase("q")) {
-                            break;
-                        } else if (!user.getPasswordHiddenContact().equals(pwHiddenContact)) {
-                            System.out.println("ATTENTION: Your inserted password doesn't match your password.");
-                            contToInsert = true;
-                        }
-                    } while (contToInsert);
-
-                    if (pwHiddenContact.equalsIgnoreCase("q")) {
-                        break;
+                    } else {
+                        indexOfContact = selectContact(arrContact, viewHiddenChoiceBool);
                     }
 
-                    arrContact = (JSONArray) userJson.get("nonVisibleContact");
-
-                    // Check if the array of contact is empty
-                    if (arrContact.isEmpty()) {
-                        System.out.println("The list of contact is empty.");
-                        break;
-                    }
-
-                    // Get the index
-                    indexOfContact = selectContact(arrContact);
-
+                    // If the user didn't insert 0
                     if (indexOfContact != 0) {
-                        // remove the contact from the list
                         arrContact.remove(indexOfContact - 1);
                     }
+
                     break;
                 }
                 // Insert a new password for view the hidden contact
-                case 4: {
+                case 3: {
                     System.out.print("Insert the new password for the hidden contact");
                     newPassWord = scanner.next();
 
@@ -264,94 +271,131 @@ public class Main {
                     break;
                 }
                 // View visible contact
+                case 4: {
+                    if (((JSONArray) userJson.get("contact")).isEmpty()) {
+                        System.out.println("ATTENTION: The list of contact is empty.");
+                        break;
+                    }
+
+                    do {
+                        System.out.println("You want view also the hidden contact (y / n): ");
+                        viewHiddenChoice = scanner.next();
+
+                        if (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n")) {
+                            System.out.println("ATTENTION: You have to insert y or n.");
+                        }
+                    } while (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n"));
+
+                    viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
+
+                    if (viewHiddenChoiceBool) {
+                        do {
+                            contToInsert = false;
+
+                            System.out.print("Insert the password for the hidden contact (q to exit): ");
+                            pwInsert = scanner.next();
+
+                            if (pwInsert.equalsIgnoreCase("q")) {
+                                break;
+                            } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                                System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                                contToInsert = true;
+                            }
+                        } while (contToInsert);
+
+                        if (!pwInsert.equalsIgnoreCase("q")) {
+                            viewContact((JSONArray) userJson.get("contact"), viewHiddenChoiceBool);
+                        }
+                    } else {
+                        viewContact((JSONArray) userJson.get("contact"), viewHiddenChoiceBool);
+                    }
+
+                    break;
+                }
+                // View the list of calls
                 case 5: {
-                    if (!((JSONArray) userJson.get("visibleContact")).isEmpty())
-                        viewContact((JSONArray) userJson.get("visibleContact"));
+                    if (((JSONArray) userJson.get("calls")).isEmpty()) {
+                        System.out.println("ATTENTION: The list of contact is empty.");
+                        break;
+                    }
+
+                    do {
+                        System.out.println("You want view also the hidden contact (y / n): ");
+                        viewHiddenChoice = scanner.next();
+
+                        if (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n")) {
+                            System.out.println("ATTENTION: You have to insert y or n.");
+                        }
+                    } while (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n"));
+
+                    viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
+
+                    if (viewHiddenChoiceBool) {
+                        do {
+                            contToInsert = false;
+
+                            System.out.print("Insert the password for the hidden contact (q to exit): ");
+                            pwInsert = scanner.next();
+
+                            if (pwInsert.equalsIgnoreCase("q")) {
+                                break;
+                            } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                                System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                                contToInsert = true;
+                            }
+                        } while (contToInsert);
+
+                        if (!pwInsert.equalsIgnoreCase("q")) {
+                            viewContact((JSONArray) userJson.get("calls"), viewHiddenChoiceBool);
+                        }
+                    } else {
+                        viewContact((JSONArray) userJson.get("calls"), viewHiddenChoiceBool);
+                    }
                     break;
                 }
-                // View hidden contact
+                // Call a contact
                 case 6: {
-                    do {
-                        contToInsert = false;
-
-                        System.out.print("Insert the password for the hidden contact (q to exit): ");
-                        pwInsert = scanner.next();
-
-                        if (pwInsert.equalsIgnoreCase("q")) {
-                            break;
-                        } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
-                            System.out.println("ATTENTION: The insert password and your current password doesn't match");
-                            contToInsert = true;
-                        }
-                    } while (contToInsert);
-
-                    if (!pwInsert.equalsIgnoreCase("q")) {
-                        viewContact((JSONArray) userJson.get("nonVisibleContact"));
+                    if (((JSONArray) userJson.get("contact")).isEmpty()) {
+                        System.out.println("ATTENTION: The list of contact is empty.");
+                        break;
                     }
 
-                    break;
-                }
-                // View the list of calls to visible contact
-                case 7: {
-                    if (!((JSONArray) userJson.get("callsToVisibleContact")).isEmpty())
-                        viewContact((JSONArray) userJson.get("callsToVisibleContact"));
-                    break;
-                }
-                // View the list of calls to hidden contact
-                case 8: {
                     do {
-                        contToInsert = false;
+                        System.out.println("You want call a hidden contact (y / n): ");
+                        viewHiddenChoice = scanner.next();
 
-                        System.out.print("Insert the password for the hidden contact (q to exit): ");
-                        pwInsert = scanner.next();
-
-                        if (pwInsert.equalsIgnoreCase("q")) {
-                            break;
-                        } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
-                            System.out.println("ATTENTION: The insert password and your current password doesn't match");
-                            contToInsert = true;
+                        if (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n")) {
+                            System.out.println("ATTENTION: You have to insert y or n.");
                         }
-                    } while (contToInsert);
+                    } while (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n"));
 
-                    if (!pwInsert.equalsIgnoreCase("q")) {
-                        viewContact((JSONArray) userJson.get("callsToNonVisibleContact"));
+                    viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
+
+                    if (viewHiddenChoiceBool) {
+                        do {
+                            contToInsert = false;
+
+                            System.out.print("Insert the password for the hidden contact (q to exit): ");
+                            pwInsert = scanner.next();
+
+                            if (pwInsert.equalsIgnoreCase("q")) {
+                                break;
+                            } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
+                                System.out.println("ATTENTION: The insert password and your current password doesn't match");
+                                contToInsert = true;
+                            }
+                        } while (contToInsert);
+
+                        if (!pwInsert.equalsIgnoreCase("q")) {
+                            indexOfContact = selectContact((JSONArray) userJson.get("contact"), viewHiddenChoiceBool);
+                        }
+                    } else {
+                        indexOfContact = selectContact((JSONArray) userJson.get("contact"), viewHiddenChoiceBool);
                     }
 
-                    break;
-                }
-                // Call a visible contact
-                case 9: {
-                    arrContact = (JSONArray) userJson.get("callsToVisibleContact");
+                    arrContact = (JSONArray) userJson.get("calls");
 
-                    indexOfContact = selectContact((JSONArray) userJson.get("visibleContact"));
-
-                    arrContact.add(((JSONArray) userJson.get("visibleContact")).get(indexOfContact-1));
-                    break;
-                }
-                // Call a hidden contact
-                case 10: {
-                    do {
-                        contToInsert = false;
-
-                        System.out.print("Insert the password for the hidden contact (q to exit): ");
-                        pwInsert = scanner.next();
-
-                        if (pwInsert.equalsIgnoreCase("q")) {
-                            break;
-                        } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
-                            System.out.println("ATTENTION: The insert password and your current password doesn't match");
-                            contToInsert = true;
-                        }
-                    } while (contToInsert);
-
-                    if (!pwInsert.equalsIgnoreCase("q")) {
-                        arrContact = (JSONArray) userJson.get("callsToNonVisibleContact");
-
-                        indexOfContact = selectContact((JSONArray) userJson.get("nonVisibleContact"));
-
-                        arrContact.add(((JSONArray) userJson.get("nonVisibleContact")).get(indexOfContact-1));
-                    }
-
+                    arrContact.add(((JSONArray) userJson.get("contact")).get(indexOfContact-1));
                     break;
                 }
                 // Exit
@@ -364,43 +408,41 @@ public class Main {
 
         // Write all the changes to the Users.json file
         writeJSONArr("src/JSON/Users.json", users);
-
-        // far visualizzare il menu
-        // 1. inserimento di un nuovo contatto nella rubrica;
-        // 2. la cancellazione di un contatto dalla rubrica;
-        // 3. inserimento di una password per i contatti nascosti;
-        // 4. visualizzazione dei contatti visibili.
-        // 5. visualizzazione dei contatti nascosti (prima di visualizzarli serve inserire la password);
-        // 6. visualizza lista chimate contatti visibili;
-        // 7. visualizza lista chiamate contatti nascosti;
-        // 8. uscita.
-
-        // METODI
-        // createNewContact
-        // deleteContact
-        // setPwHidden
-        // viewNonHiddenContact
-        // viewHiddenContact
-        // viewCallNonHiddenContact
-        // viewCallHiddenContact
     }
 
-    private static void viewContact(JSONArray array) {
-        for (int i = 0; i < array.size(); i++) {
-            JSONObject contact = (JSONObject) array.get(i);
-
-            System.out.printf("Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
+    private static boolean checkIfDigit(String s) {
+        try {
+            Long.parseLong(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 
-    private static int selectContact(JSONArray contacts) {
+    private static void viewContact(JSONArray array, boolean hidden) {
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject contact = (JSONObject) array.get(i);
+            if (hidden) {
+                System.out.printf("Name: %s, Surname: %s, Number: %s, Hidden: %s\n", contact.get("name"), contact.get("surname"), contact.get("number"), contact.get("hidden"));
+            } else if ((boolean) contact.get("hidden") == hidden) {
+                System.out.printf("Name: %s, Surname: %s, Number: %s, Hidden: %s\n", contact.get("name"), contact.get("surname"), contact.get("number"), contact.get("hidden"));
+            }
+
+        }
+    }
+
+    private static int selectContact(JSONArray contacts, boolean hidden) {
         boolean contToInsert;
         int indexOfContact = 0;
 
         for (int i = 0; i < contacts.size(); i++) {
             JSONObject contact = (JSONObject) contacts.get(i);
 
-            System.out.printf("[" + (i + 1) + "] - Name: %s, Surname: %s\n", contact.get("name"), contact.get("surname"));
+            if (hidden) {
+                System.out.printf("[" + (i + 1) + "] - Name: %s, Surname: %s, Number: %s, Hidden: %s\n", contact.get("name"), contact.get("surname"), contact.get("number"), contact.get("hidden"));
+            } else if ((boolean) contact.get("hidden") == hidden) {
+                System.out.printf("[" + (i + 1) + "] - Name: %s, Surname: %s, Number: %s, Hidden: %s\n", contact.get("name"), contact.get("surname"), contact.get("number"), contact.get("hidden"));
+            }
         }
 
         do {
@@ -425,11 +467,10 @@ public class Main {
 
     private static JSONObject getUserFromUsername(String username, JSONArray users) {
         JSONObject userJsonObj;
-        String usernameOfObj = "";
         for (Object userObj : users) {
             userJsonObj = (JSONObject) userObj;
 
-            if (((String) userJsonObj.get("username")).equals(username)) {
+            if (userJsonObj.get("username").equals(username)) {
                 return userJsonObj;
             }
         }
@@ -439,7 +480,6 @@ public class Main {
 
     private static Contact[] getListContact(JSONObject jsonObject, String paramName) {
         JSONArray arrayOfContact = (JSONArray) jsonObject.get(paramName);
-
         Contact[] list = new Contact[arrayOfContact.size()];
 
         for (int i = 0; i < list.length; i++) {
@@ -447,8 +487,10 @@ public class Main {
 
             String name = (String) userJsonObj.get("name");
             String surname = (String) userJsonObj.get("surname");
+            String number = (String) userJsonObj.get("number");
+            boolean hidden = (boolean) userJsonObj.get("hidden");
 
-            list[i] = new Contact(name, surname);
+            list[i] = new Contact(name, surname, number, hidden);
         }
 
         return list;

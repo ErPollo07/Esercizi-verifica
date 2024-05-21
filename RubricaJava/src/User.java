@@ -5,29 +5,23 @@ public class User {
     private String username;
     private String password;
     private String passwordHiddenContact;
-    private Contact[] visibleContact;
-    private Contact[] nonVisibleContact;
-    private Contact[] callsToVisibleContact;
-    private Contact[] callsToNonVisibleContact;
+    private Contact[] contact;
+    private Contact[] calls;
 
     public User(String username, String password, String passwordHiddenContact) {
         this.username = username;
         this.password = password;
         this.passwordHiddenContact = passwordHiddenContact;
-        this.visibleContact = new Contact[1];
-        this.nonVisibleContact = new Contact[1];
-        this.callsToVisibleContact = new Contact[1];
-        this.callsToNonVisibleContact = new Contact[1];
+        this.contact = new Contact[1];
+        this.calls = new Contact[1];
     }
 
-    public User(String username, String password, String passwordHiddenContact, Contact[] visibleContact, Contact[] nonVisibleContact, Contact[] callsToVisibleContact, Contact[] callsToNonVisibleContact) {
+    public User(String username, String password, String passwordHiddenContact, Contact[] contact, Contact[] calls) {
         this.username = username;
         this.password = password;
         this.passwordHiddenContact = passwordHiddenContact;
-        this.visibleContact = visibleContact;
-        this.nonVisibleContact = nonVisibleContact;
-        this.callsToVisibleContact = callsToVisibleContact;
-        this.callsToNonVisibleContact = callsToNonVisibleContact;
+        this.contact = contact;
+        this.calls = calls;
     }
 
     public String getUsername() {
@@ -54,36 +48,20 @@ public class User {
         this.passwordHiddenContact = passwordHiddenContact;
     }
 
-    public Contact[] getVisibleContact() {
-        return visibleContact;
+    public Contact[] getContact() {
+        return contact;
     }
 
-    public void setVisibleContact(Contact[] visibleContact) {
-        this.visibleContact = visibleContact;
+    public void setContact(Contact[] contact) {
+        this.contact = contact;
     }
 
-    public Contact[] getNonVisibleContact() {
-        return nonVisibleContact;
+    public Contact[] getCalls() {
+        return calls;
     }
 
-    public void setNonVisibleContact(Contact[] nonVisibleContact) {
-        this.nonVisibleContact = nonVisibleContact;
-    }
-
-    public Contact[] getCallsToVisibleContact() {
-        return callsToVisibleContact;
-    }
-
-    public void setCallsToVisibleContact(Contact[] callsToVisibleContact) {
-        this.callsToVisibleContact = callsToVisibleContact;
-    }
-
-    public Contact[] getCallsToNonVisibleContact() {
-        return callsToNonVisibleContact;
-    }
-
-    public void setCallsToNonVisibleContact(Contact[] callsToNonVisibleContact) {
-        this.callsToNonVisibleContact = callsToNonVisibleContact;
+    public void setCalls(Contact[] calls) {
+        this.calls = calls;
     }
 
     public JSONObject toJSONObj() {
@@ -92,10 +70,8 @@ public class User {
         userJSONObj.put("username", this.username);
         userJSONObj.put("password", this.password);
         userJSONObj.put("pwHiddenContact", this.passwordHiddenContact);
-        userJSONObj.put("visibleContact", listToJSONArray(this.visibleContact));
-        userJSONObj.put("nonVisibleContact", listToJSONArray(this.nonVisibleContact));
-        userJSONObj.put("callsToVisibleContact", listToJSONArray(this.callsToVisibleContact));
-        userJSONObj.put("callsToNonVisibleContact", listToJSONArray(this.callsToNonVisibleContact));
+        userJSONObj.put("contact", listToJSONArray(this.contact));
+        userJSONObj.put("calls", listToJSONArray(this.calls));
 
         return userJSONObj;
     }
@@ -110,6 +86,8 @@ public class User {
 
             tempContact.put("name", arr[i].getName());
             tempContact.put("surname", arr[i].getSurname());
+            tempContact.put("number", arr[i].getNumber());
+            tempContact.put("hidden", arr[i].isHidden());
 
             jsonArray.add(tempContact);
         }
