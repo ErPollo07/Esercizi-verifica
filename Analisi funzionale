@@ -1,0 +1,27 @@
+ANALISI FUNZIONALE
+
+All'avvio del programma all'utente si presenta un menu con 3 opzioni:
+1. Login
+2. Sing up 
+3. Exit
+
+1. LOGIN
+Se l'utente sceglie di fare il login allora gli verrà chiesto di inserire il proprio username e password. 
+Se username e password non corrispondono o non esistono all'utente viene fatto reiserire tutte e due.
+
+2. Sing up
+Se l'utente scegli di registrarsi allora gli verrà chiesto di inserire username, password e password per i contatti nascosti.
+Se l'username inserito dall'utente esiste già viene fatto reiserire.
+
+3. Exit
+Se l'utente scegli di uscire il programma si interrompe.
+
+MENU PRINCIPALE
+Dopo aver eseguito il login all'utente si presenta il menu principale del programma con le seguenti opzioni:
+1. Insert a new contact
+2. Delete a contact
+3. Insert a new password for the hidden contacts
+4. View the contacts
+5. View list of calls
+6. Call a contact
+7. Exit
