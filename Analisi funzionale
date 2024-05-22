@@ -25,3 +25,13 @@ Dopo aver eseguito il login all'utente si presenta il menu principale del progra
 5. View list of calls
 6. Call a contact
 7. Exit
+
+1. INSERT A NEW CONTACT
+se l'utente sceglie di aggiungere un nuovo contatto gli verrà chiesto di inserire:
+- nome del contatto (se il nome e vuoto alloa fai reinserire)
+- cognome del contatto (se il cognome e vuoto alloa fai reinserire)
+- numero di telefono del contatto (se la stringa inserita non e' un numero)
+- nascosto o no (se l'utente inserisce y allora il contatto dovra' essere nascosto altrimenti non sarà nascosto)
+
+2. DELETE A CONTACT
+
