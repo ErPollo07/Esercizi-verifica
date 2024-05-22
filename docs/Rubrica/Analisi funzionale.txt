@@ -18,20 +18,50 @@ Se l'utente scegli di uscire il programma si interrompe.
 
 MENU PRINCIPALE
 Dopo aver eseguito il login all'utente si presenta il menu principale del programma con le seguenti opzioni:
-1. Insert a new contact
-2. Delete a contact
-3. Insert a new password for the hidden contacts
-4. View the contacts
-5. View list of calls
+1. Insert new contact in your address book
+2. Delete a contact in your address book
+3. Insert a new password for view the hidden contact
+4. View the list of contact
+5. View the list of calls
 6. Call a contact
 7. Exit
 
-1. INSERT A NEW CONTACT
-se l'utente sceglie di aggiungere un nuovo contatto gli verrà chiesto di inserire:
+1. INSERT NEW CONTACT IN YOUR ADDRESS BOOK
+Se l'utente sceglie di aggiungere un nuovo contatto gli verrà chiesto di inserire:
 - nome del contatto (se il nome e vuoto alloa fai reinserire)
 - cognome del contatto (se il cognome e vuoto alloa fai reinserire)
 - numero di telefono del contatto (se la stringa inserita non e' un numero)
 - nascosto o no (se l'utente inserisce y allora il contatto dovra' essere nascosto altrimenti non sarà nascosto)
 
-2. DELETE A CONTACT
+2. DELETE A CONTACT IN YOUR ADDRESS BOOK
+Se l'utente sceglie di cancellare un utente allora prima cosa gli verrà chiesto di scrivere "y" se vuole cancellare un contatto nascosto,
+se inserisce qualcosa altro verrà contatto come un no.
+Poi verra' visualizata la lista dei contatti presenti in rubrica con il proprio indice prima.
+L'utente dovra' inserire l'indice del contatto che vuole eliminare, successivamente il contatto verra' eliminato.
 
+3. INSERT A NEW PASSWORD FOR VIEW THE HIDDEN CONTACT
+Se l'utente vuole inserire una nuova password per visualizzare i contatti nascosti allora gli si chiede di inserire una nuova password.
+Per motivi di competenze non si puo' fare un sistema di sicurezza per questa opzione.
+
+4. VIEW THE LIST OF CONTACT
+Se l'utente vuole visualizzare la lista di contatti che ha nella rubrica, prima il programma verifica che la lista non sia vuota.
+Se la lista e' vuota allora lo si scrive all'utente e si interrompe l'escuzione della scelta.
+Se la lista non e' vuota allora il progaramma chiede all'utente si chiede se vuole vedere anche i contatti nascosti.
+Se l'utente inserisce "y" allora verra' visualizata la lista con anche i contatti nascosti previo inserimento della opportuna password.
+Se l'utente inserisce una stringa diversa da "y" allora verra' visualizata la lista con solo i contatti visibili.
+
+5. VIEW THE LIST OF CALLS
+Anche in questo caso viene controllato se la lista delle chiamate e' vuota e si chiede se si vuole visualizzare la lista con anche i contatti nascosti.
+Quindi se l'utente inserisce "y" verra' chiesta la password e poi se la password e' giusta verra' visualizata la lista con i contatti nascosti.
+Se l'utente inserisce qualcosa di diverso da "y" verrà visualizata la lista senza i contatti nascosti.
+
+6. CALL A CONTACT
+Se l'utente vuole chiaamre qualcuno viene verificato se la lista dei contatti non e' vuota e viene chiesto se vuole chiamare un contatto nascosto.
+Se inserisce "y" allora viene visualizzato l'elenco dei contatti sia visibili che nascosti con il loro indice solo se l'utente ha inserito la password
+per i contatti nascosti.
+Se l'utente inserisce qualcosa di diverso da "y" allora viene visualizata la lista senza i contatti visibili.
+Succesivamente si chiede all'utente di inserire l'indice del contatto che vuole chiamare.
+Poi viene aggiunto il contatto alla lista delle chiamate.
+
+7. EXIT
+Il progaramma viene interrotto.

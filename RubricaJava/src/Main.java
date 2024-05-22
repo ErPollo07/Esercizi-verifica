@@ -241,6 +241,7 @@ public class Main {
                             if (pwInsert.equalsIgnoreCase("q")) {
                                 wantDelete = false;
                                 break;
+                            // Check if the password insert is different from the user password
                             } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
                                 System.out.println("ATTENTION: The insert password and your current password doesn't match");
                                 contToInsert = true;
@@ -320,7 +321,7 @@ public class Main {
                     }
 
                     do {
-                        System.out.println("You want view also the hidden contact (y / n): ");
+                        System.out.println("You want view also the calls to hidden contact (y / n): ");
                         viewHiddenChoice = scanner.next();
 
                         if (!viewHiddenChoice.equalsIgnoreCase("y") && !viewHiddenChoice.equalsIgnoreCase("n")) {
