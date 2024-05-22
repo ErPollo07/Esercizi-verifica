@@ -270,7 +270,7 @@ public class Main {
                     userJson.put("pwHiddenContact", newPassWord);
                     break;
                 }
-                // View visible contact
+                // View contact
                 case 4: {
                     if (((JSONArray) userJson.get("contact")).isEmpty()) {
                         System.out.println("ATTENTION: The list of contact is empty.");

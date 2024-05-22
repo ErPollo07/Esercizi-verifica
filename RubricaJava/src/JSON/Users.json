@@ -1,1 +1,35 @@
-[{"password":"admin","calls":[{"number":"344333","hidden":false,"surname":"surname3","name":"name2"}],"contact":[{"number":"123123","hidden":true,"surname":"ContSurname1","name":"ContName1"},{"number":"123123","hidden":false,"surname":"ContSurname2","name":"ContName2"},{"number":"344333","hidden":false,"surname":"surname3","name":"name2"}],"pwHiddenContact":"adminh","username":"admin"}]
+[
+  {
+    "password": "admin",
+    "calls": [
+      {
+        "number": "344333",
+        "hidden": false,
+        "surname": "surname3",
+        "name": "name2"
+      }
+    ],
+    "contact": [
+      {
+        "number": "123123",
+        "hidden": true,
+        "surname": "ContSurname1",
+        "name": "ContName1"
+      },
+      {
+        "number": "123123",
+        "hidden": false,
+        "surname": "ContSurname2",
+        "name": "ContName2"
+      },
+      {
+        "number": "344333",
+        "hidden": false,
+        "surname": "surname3",
+        "name": "name2"
+      }
+    ],
+    "pwHiddenContact": "adminh",
+    "username": "admin"
+  }
+]
