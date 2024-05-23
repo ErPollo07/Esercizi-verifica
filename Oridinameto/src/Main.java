@@ -1,30 +1,61 @@
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int[] arr = {6, 2, 4, 8, 12, 14, 16, 10};
+        Scanner scanner = new Scanner(System.in);
+
+        int[] tempArr = new int[11];
+        int couter = 0;
+        String number;
+
+        do {
+            System.out.println("Insert a number (q to exit): ");
+            number = scanner.next();
+
+            if (number.equalsIgnoreCase("q")) {
+                if (couter < 10) {
+                    System.out.println("You have to insert at least 10 number maximum 11. You have insert " + couter + " number.");
+                } else {
+                    break;
+                }
+            } else if (Integer.parseInt(number) < 0 || Integer.parseInt(number) > 30) {
+                System.out.println("You have to insert a positive number between 1 and 30");
+            } else if (checkIfDigit(number)) {
+                tempArr[couter] = Integer.parseInt(number);
+                couter++;
+            } else {
+                System.out.println("You have to insert a number.");
+            }
+
+        } while (couter <= 11);
+
+        int[] arr = new int[couter];
+
+        System.arraycopy(tempArr, 0, arr, 0, arr.length);
 
         order(arr);
+
         System.out.println("Args = " + Arrays.toString(arr));
-        System.out.println("Args = [2, 4, 6, 8, 10, 12, 14, 10]");
     }
 
     private static void order(int[]arr) {
-        int posCurrent, posMin = 0;
+        int posMin = 0;
 
         for (int i = 0; i < arr.length - 1; i++) {
             if (arr[i] % 2 == 0) {
-                posCurrent = posMin = i;
+                posMin = i;
 
-                // Find the minimum number from i to the max number
-                for (int j = posCurrent; j < arr.length - 1; j++) {
+                // Find the minimum even number from i to the max number
+                for (int j = i; j < arr.length - 1; j++) {
                     if (arr[j] % 2 == 0 && arr[j] < arr[posMin]){
                         posMin = j;
                     }
                 }
 
-                if (posMin != posCurrent) {
-                    swap(arr, posMin, posCurrent);
+                // Swap the number in posMin with the number in pos i
+                if (posMin != i) {
+                    swap(arr, posMin, i);
                 }
             }
         }
@@ -34,6 +65,18 @@ public class Main {
         int temp = arr[pos1];
         arr[pos1] = arr[pos2];
         arr[pos2] = temp;
+    }
+
+    private static boolean checkIfDigit(String s) {
+        // Try to transform the string into long
+        // if is possible return true
+        // if is not possible return false
+        try {
+            Long.parseLong(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
 

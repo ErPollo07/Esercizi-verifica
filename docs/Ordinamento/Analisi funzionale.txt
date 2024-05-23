@@ -1,0 +1,7 @@
+ANALISI DEI FUNZIONALE
+L'algoritmo usa un ciclo per determinare la pozione da cui partire a cercare il numero pari piu' piccolo
+semplicemente testando se l'elemento nella posizione uguale all'indice del ciclo e' pari.
+Se il numero testato e' pari allora un ciclo piu' interno trova il numero pari piu' piccolo partendo da questa posizione.
+Se il numero pari piu' piccolo e' in una posizione diversa da l'indice di partenza allora 
+il numero piu' piccolo e il numero in posizione di partenza vengono scambiati.
+Si ripete il ciclo fino al numero prima della penultima posizione.

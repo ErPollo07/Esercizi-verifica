@@ -1,0 +1,2 @@
+ANALISI DEI REQUISITI
+L'algoritmo per funzionare ha bisogno di un array da ordinare e una fuzione swap che scambia la posizione di due numeri passati come parametri.
