@@ -1,0 +1,4 @@
+CAMBIAMENTI RISPETTO ALLA VERIFICA
+Durante la verifica ho preso in considerazione di fare due liste separate per i contatti visibili e contatti nascosti 
+nel programma ho fatto una lista unica con flag per ogni contatto. Questo ha portato a una modifica del menu.
+In verifica non ho incluso il numero di telefono per i contatti.
