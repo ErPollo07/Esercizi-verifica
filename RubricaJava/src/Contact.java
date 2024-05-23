@@ -44,6 +44,6 @@ public class Contact {
     }
 
     public String toString() {
-        return String.format("Name: %s Surname: %s", name, surname);
+        return String.format("Name: %s, Surname: %s, Number: %s, Hidden: %s", name, surname, number, hidden);
     }
 }

@@ -69,6 +69,7 @@ public class Main {
         // Read the Users file
         users = readJSONArr("src/JSON/Users.json");
 
+        // login loop
         do {
             exit = true;
 
@@ -151,6 +152,7 @@ public class Main {
             }
         } while (exit);
 
+        // principal loop
         do {
             contPrincMenu = true;
 
@@ -412,6 +414,9 @@ public class Main {
     }
 
     private static boolean checkIfDigit(String s) {
+        // Try to transform the string into long
+        // if is possible return true
+        // if is not possible return false
         try {
             Long.parseLong(s);
             return true;

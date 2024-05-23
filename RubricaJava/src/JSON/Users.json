@@ -1,11 +1,19 @@
 [
   {
+    "username": "admin",
     "password": "admin",
+    "pwHiddenContact": "adminh",
     "calls": [
       {
         "number": "344333",
         "hidden": false,
-        "surname": "surname3",
+        "surname": "surname1",
+        "name": "name1"
+      },
+      {
+        "number": "345423",
+        "hidden": true,
+        "surname": "surname2",
         "name": "name2"
       }
     ],
@@ -21,15 +29,7 @@
         "hidden": false,
         "surname": "ContSurname2",
         "name": "ContName2"
-      },
-      {
-        "number": "344333",
-        "hidden": false,
-        "surname": "surname3",
-        "name": "name2"
       }
-    ],
-    "pwHiddenContact": "adminh",
-    "username": "admin"
+    ]
   }
 ]

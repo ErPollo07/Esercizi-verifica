@@ -1,2 +1,2 @@
 ANALISI DEI REQUISITI
-Il programma necessita delle classi User e Contatto e di un file su dove salvare i dati di ogni utente.
+Il programma necessita delle classi User, Contatto, ToolsJson e Common e di un file su dove salvare i dati di ogni utente.

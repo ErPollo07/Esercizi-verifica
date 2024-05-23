@@ -1,0 +1,96 @@
+ANALISI TECNICA
+
+USER
+La classe User ha i seguenti attributi:
+- username: string = username dell'utente.
+- password: string = password dell'utente.
+- passwordHiddenContact: string = password per visualizzare i contatti nascosti.
+- contact: Contact[] = lista dei contatti.
+- calls: Contact[] = lista delle chiamate.
+
+COSTRUTTORI
+1. Sever per gli utenti che si sono appena registrati
+2. Serve per gli utenti che hanno gia' un account
+
+METODI
+- Getters e setters di tutte gli attributi.
+- toJSONObj: JSONObject
+    Ritorna il corrispettivo JSONObject dell'utente.
+- listToJSONArray: JSONArray
+    Ritorna il corrispettivo JSONArray di una lista passata come paramentro.
+
+CONTACT
+name: string = nome del contatto.
+surname: string = cognome del contatto.
+nuber: string = il numero di telefono del contatto.
+hidden: boolean = se true indica che il contatto e' nascosto, se falso allora il contatto non e' nascosto.
+
+COSTRUTTORE
+Vengono passati come parametri name, surname, number, hidden.
+Poi vengono assegnati agli attributi della classe i parametri (this.name = name; this.surname = surname; ...).
+
+METODI
+- Getters e setters per tutti gli attributi.
+- toString: String
+    Ritorna una stringa formattata con tutti gli attributi.
+
+TOOLJSON
+Questa classe contiene due metodi:
+- readJSONArr: JSONArray
+    Ritorna un JSONArray contenente i dati nel file passato come parametro
+- writeJSONArr: void
+    Scrive i dati del JSONArray passato come parametro nel file anchesso passato come parametro.
+
+COMMON
+Questa classe contiene tre metodi:
+clrScr: void
+    Pulisce lo schermo
+wait: void
+    Ferma il programma per un tot di millisecondi passati come parametro
+printMenu: int
+    Stampa un menu passato come paramentro.
+    Prima stampa il primo elemento perche' e' il titolo.
+    Poi stampa tutte le altre opzioni con un indice.
+    Infine chiede all'utente quale opzione del menu vuole scegliere.
+    Poi ritorna la scelta dell'utente.
+
+USER.json
+Questo file serve per tenere le informazioni di tutti gli utenti registrati.
+Il file e' un lista di oggetti json, in cui ogni json rappresenta un utente, e ogni oggetto ha tutte le informazioni di un utente.
+
+STRUTTURA
+Questo e' la struttura che deve avere un oggetto json che rappresenta un utente.
+
+{
+    "username": "admin",
+    "password": "admin",
+    "pwHiddenContact": "adminh",
+    "calls": [
+        {
+        "number": "344333",
+        "hidden": false,
+        "surname": "surname1",
+        "name": "name1"
+        },
+        {
+        "number": "345423",
+        "hidden": true,
+        "surname": "surname2",
+        "name": "name2"
+        }
+    ],
+    "contact": [
+        {
+        "number": "123123",
+        "hidden": true,
+        "surname": "ContSurname1",
+        "name": "ContName1"
+        },
+        {
+        "number": "345345",
+        "hidden": false,
+        "surname": "ContSurname2",
+        "name": "ContName2"
+        }
+    ]
+}

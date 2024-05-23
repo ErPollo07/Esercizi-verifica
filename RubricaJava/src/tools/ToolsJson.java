@@ -16,14 +16,14 @@ public class ToolsJson {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray = new JSONArray();
 
-        // Read and save the Agenda.json content in jsonObj
+        // Read and save the file content in jsonObj
         try (FileReader fileReader = new FileReader(path)) {
             Object obj = jsonParser.parse(fileReader);
             // assign to the JSONObject (global variable)
             // the file which we want ot extract information from
             jsonArray = (JSONArray) obj;
         } catch (IOException | ParseException e) {
-            System.out.println("C'e' stato un problema con i file di accesso. Ci scusiamo per il disagio");
+            System.out.println("There was a problem with the files. We apologize for the inconvenience.");
         }
 
         return jsonArray;
@@ -37,6 +37,4 @@ public class ToolsJson {
             e.printStackTrace();
         }
     }
-
-
 }

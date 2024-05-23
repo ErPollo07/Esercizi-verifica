@@ -40,11 +40,11 @@ public class Common {
                 scelta = Integer.parseInt(scanner.next());
 
                 if (scelta < 1 || scelta > opzioni.length - 1) {
-                    System.out.println("Valore errato. Riprova");
+                    System.out.println("Incorrect value. Try again");
                     continueToInsert = true;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Il valore deve essere numerico");
+                System.out.println("The value must be numeric");
                 continueToInsert = true;
             }
         } while (continueToInsert);
