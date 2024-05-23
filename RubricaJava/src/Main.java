@@ -57,7 +57,6 @@ public class Main {
 
         // Variable to delete a contact
         int indexOfContact = 0;
-        boolean wantDelete;
 
         // Variable to set another password for the hidden contact
         String newPassWord;
@@ -187,6 +186,7 @@ public class Main {
 
                         if (number.isEmpty()) {
                             System.out.println("ATTENTION: You have to insert a blank string");
+                        // Check if the string is a number
                         } else if (!checkIfDigit(number)) {
                             System.out.println("ATTENTION: You have to insert only number");
                         }
@@ -208,8 +208,6 @@ public class Main {
                 }
                 // Delete a contact in your address book
                 case 2: {
-                    wantDelete = true;
-
                     arrContact = (JSONArray) userJson.get("contact");
 
                     // If the list is empty then
@@ -234,6 +232,8 @@ public class Main {
                     // If the user wants to delete a hidden contact
                     // ask him the password for the hidden contact
                     if (viewHiddenChoiceBool) {
+                        // Continue to loop while the password match the correct password
+                        // or the user want to exit
                         do {
                             contToInsert = false;
 
@@ -241,7 +241,6 @@ public class Main {
                             pwInsert = scanner.next();
 
                             if (pwInsert.equalsIgnoreCase("q")) {
-                                wantDelete = false;
                                 break;
                             // Check if the password insert is different from the user password
                             } else if (!pwInsert.equals(user.getPasswordHiddenContact())) {
@@ -266,9 +265,11 @@ public class Main {
                 }
                 // Insert a new password for view the hidden contact
                 case 3: {
+                    // Ask the user the new password
                     System.out.print("Insert the new password for the hidden contact");
                     newPassWord = scanner.next();
 
+                    // Set the password
                     user.setPassword(newPassWord);
                     userJson.put("pwHiddenContact", newPassWord);
                     break;
@@ -280,6 +281,7 @@ public class Main {
                         break;
                     }
 
+                    // Ask the user if he wants to view also the hidden contact
                     do {
                         System.out.println("You want view also the hidden contact (y / n): ");
                         viewHiddenChoice = scanner.next();
@@ -292,6 +294,8 @@ public class Main {
                     viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
 
                     if (viewHiddenChoiceBool) {
+                        // Continue to loop while the password match the correct password
+                        // or the user want to exit
                         do {
                             contToInsert = false;
 
@@ -322,6 +326,7 @@ public class Main {
                         break;
                     }
 
+                    // Ask the user if he wants to view also the hidden contact
                     do {
                         System.out.println("You want view also the calls to hidden contact (y / n): ");
                         viewHiddenChoice = scanner.next();
@@ -334,6 +339,8 @@ public class Main {
                     viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
 
                     if (viewHiddenChoiceBool) {
+                        // Continue to loop while the password match the correct password
+                        // or the user want to exit
                         do {
                             contToInsert = false;
 
@@ -363,6 +370,7 @@ public class Main {
                         break;
                     }
 
+                    // Ask the user if he wants to view also the hidden contact
                     do {
                         System.out.println("You want call a hidden contact (y / n): ");
                         viewHiddenChoice = scanner.next();
@@ -375,6 +383,8 @@ public class Main {
                     viewHiddenChoiceBool = viewHiddenChoice.equalsIgnoreCase("y");
 
                     if (viewHiddenChoiceBool) {
+                        // Continue to loop while the password match the correct password
+                        // or the user want to exit
                         do {
                             contToInsert = false;
 
